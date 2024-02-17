@@ -15,4 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "GitHubClient"
 include(":app")
- 
+include(":feature:home")
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
