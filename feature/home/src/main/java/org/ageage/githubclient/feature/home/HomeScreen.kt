@@ -11,3 +11,9 @@ fun HomeScreen() {
         text = "Home Screen",
     )
 }
+
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    HomeScreen()
+}
