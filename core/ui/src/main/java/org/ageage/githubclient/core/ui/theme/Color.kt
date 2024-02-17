@@ -1,4 +1,4 @@
-package org.ageage.githubclient.ui.theme
+package org.ageage.githubclient.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
