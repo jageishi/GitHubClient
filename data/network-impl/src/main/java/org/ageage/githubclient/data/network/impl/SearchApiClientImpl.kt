@@ -2,15 +2,13 @@ package org.ageage.githubclient.data.network.impl
 
 import org.ageage.githubclient.data.network.SearchApiClient
 import org.ageage.githubclient.data.network.response.RepositoryResponse
+import org.ageage.githubclient.data.network.service.GitHubApiService
 
-class SearchApiClientImpl : SearchApiClient {
+internal class SearchApiClientImpl(
+    private val gitHubApiService: GitHubApiService
+) : SearchApiClient {
     override suspend fun searchRepositories(keyword: String): RepositoryResponse {
-        return RepositoryResponse(
-            listOf(
-                keyword,
-                keyword,
-                keyword
-            )
-        )
+        gitHubApiService.searchRepositories("$keyword+in:name") // TODO  詰替えを行う
+        return RepositoryResponse(emptyList())
     }
 }
