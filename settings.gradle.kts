@@ -1,4 +1,7 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -14,8 +17,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "GitHubClient"
+
 include(":app")
 include(":feature:home")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include(":date:repository")
 include(":core:ui")
+include(":core:model")
