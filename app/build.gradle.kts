@@ -33,6 +33,12 @@ android {
 
 dependencies {
     implementation(projects.core.ui)
+
+    implementation(projects.data.repository)
+    implementation(projects.data.repositoryImpl)
+    implementation(projects.data.network)
+    implementation(projects.data.networkImpl)
+
     implementation(projects.feature.home)
 
     implementation(libs.androidx.core.ktx)

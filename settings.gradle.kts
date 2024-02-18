@@ -19,7 +19,10 @@ dependencyResolutionManagement {
 rootProject.name = "GitHubClient"
 
 include(":app")
-include(":feature:home")
-include(":date:repository")
 include(":core:ui")
 include(":core:model")
+include(":data:repository")
+include(":data:repository-impl")
+include(":data:network")
+include(":data:network-impl")
+include(":feature:home")
