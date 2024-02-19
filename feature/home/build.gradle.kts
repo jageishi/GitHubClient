@@ -12,7 +12,7 @@ android {
 
 dependencies {
     implementation(projects.core.ui)
-    implementation(projects.data.repository)
+    implementation(projects.core.data.repository)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

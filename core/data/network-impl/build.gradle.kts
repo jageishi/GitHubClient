@@ -11,7 +11,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.data.network)
+    implementation(projects.core.data.network)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.serialization.json)

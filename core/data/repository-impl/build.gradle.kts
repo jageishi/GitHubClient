@@ -11,8 +11,8 @@ android {
 
 dependencies {
     implementation(projects.core.model)
-    implementation(projects.data.repository)
-    implementation(projects.data.network)
+    implementation(projects.core.data.repository)
+    implementation(projects.core.data.network)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.dagger.hilt.android)
