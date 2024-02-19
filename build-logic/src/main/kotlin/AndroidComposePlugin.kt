@@ -24,6 +24,7 @@ class AndroidComposePlugin : Plugin<Project> {
                 implementation(libs.library("androidx-compose-ui-tooling-preview"))
                 implementation(libs.library("androidx-compose-material3"))
                 implementation(libs.library("androidx-activity-compose"))
+                implementation(libs.library("androidx-lifecycle-runtime-compose"))
                 debugImplementation(libs.library("androidx-compose-ui-tooling"))
                 debugImplementation(libs.library("androidx-compose-ui-test-manifest"))
                 androidTestImplementation(platform(libs.library("androidx-compose-bom")))

@@ -1,11 +1,13 @@
 package org.ageage.githubclient.feature.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ageage.githubclient.data.repository.SearchRepository
 import javax.inject.Inject
@@ -15,17 +17,22 @@ internal class HomeViewModel @Inject constructor(
     private val searchRepository: SearchRepository
 ) : ViewModel() {
 
-    private val effectChannel = Channel<Effect>(Channel.UNLIMITED)
+    private val _uiState = MutableStateFlow(HomeScreenState())
+    val uiState: StateFlow<HomeScreenState> = _uiState
+
+    private val effectChannel = Channel<HomeScreenEffect>(Channel.UNLIMITED)
     val effect = effectChannel.receiveAsFlow()
 
-    fun onButtonClick() = viewModelScope.launch {
-        searchRepository.searchRepositories("keyword").let {
-            Log.d("HomeViewModel", "onButtonClick: $it")
-        }
-        effectChannel.send(Effect.OnButtonClick)
-    }
+    fun onEvent(event: HomeScreenEvent) = viewModelScope.launch {
+        when (event) {
+            is HomeScreenEvent.OnSearchQueryChange -> {
+                _uiState.update { it.copy(searchQuery = event.query) }
+            }
 
-    sealed interface Effect {
-        object OnButtonClick : Effect
+            HomeScreenEvent.OnKeyboardActionSearch,
+            HomeScreenEvent.OnSearchButtonClick -> {
+                effectChannel.send(HomeScreenEffect.NavigateToSearchRepositories)
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ composeCompilerVersion = "1.5.9"
 androidxCoreKtx = "1.12.0"
 androidxTestExtJunit = "1.1.5"
 androidxTestEspressoCore = "3.5.1"
-androidxLifecycleRuntimeKtx = "2.7.0"
+androidxLifecycle = "2.7.0"
 androidxActivityCompose = "1.8.2"
 androidxComposeBom = "2024.02.00"
 androidxAppcompat = "1.6.1"
@@ -27,7 +27,8 @@ androidGradlePlugin = "7.2.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_top_app_bar_title">ホーム</string>
+    <string name="home_text_field_placeholder">リポジトリ名を入力してください</string>
+    <string name="home_button_search">検索</string>
+</resources>
