@@ -3,7 +3,9 @@ package org.ageage.githubclient
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import org.ageage.githubclient.core.ui.screenconfig.HomeScreenConfig
 import org.ageage.githubclient.feature.home.homeScreen
+import org.ageage.githubclient.feature.searchrepository.searchRepositoryScreen
 
 @Composable
 fun GitHubClientNavGraph() {
@@ -11,8 +13,9 @@ fun GitHubClientNavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = HomeScreenConfig.route
     ) {
         homeScreen(navController)
+        searchRepositoryScreen(navController)
     }
 }

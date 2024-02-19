@@ -9,13 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.ageage.githubclient.data.repository.SearchRepository
 import javax.inject.Inject
 
 @HiltViewModel
-internal class HomeViewModel @Inject constructor(
-    private val searchRepository: SearchRepository
-) : ViewModel() {
+internal class HomeViewModel @Inject constructor() : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeScreenState())
     val uiState: StateFlow<HomeScreenState> = _uiState
@@ -29,9 +26,13 @@ internal class HomeViewModel @Inject constructor(
                 _uiState.update { it.copy(searchQuery = event.query) }
             }
 
-            HomeScreenEvent.OnKeyboardActionSearch,
+            HomeScreenEvent.OnKeyboardActionSearch, // TODO 空文字で発火するとクラッシュする問題を修正する
             HomeScreenEvent.OnSearchButtonClick -> {
-                effectChannel.send(HomeScreenEffect.NavigateToSearchRepositories)
+                effectChannel.send(
+                    HomeScreenEffect.NavigateToSearchRepositoryScreen(
+                        query = uiState.value.searchQuery.trim()
+                    )
+                )
             }
         }
     }

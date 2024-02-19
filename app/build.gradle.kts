@@ -40,6 +40,7 @@ dependencies {
     implementation(projects.core.data.networkImpl)
 
     implementation(projects.feature.home)
+    implementation(projects.feature.searchRepository)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

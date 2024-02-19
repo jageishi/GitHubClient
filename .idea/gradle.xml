@@ -25,13 +25,14 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/data/network" />
-            <option value="$PROJECT_DIR$/core/data/network-impl" />
+            <option value="$PROJECT_DIR$/core/data/network_impl" />
             <option value="$PROJECT_DIR$/core/data/repository" />
-            <option value="$PROJECT_DIR$/core/data/repository-impl" />
+            <option value="$PROJECT_DIR$/core/data/repository_impl" />
             <option value="$PROJECT_DIR$/core/model" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/home" />
+            <option value="$PROJECT_DIR$/feature/search_repository" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

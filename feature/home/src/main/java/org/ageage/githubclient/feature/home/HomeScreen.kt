@@ -1,6 +1,5 @@
 package org.ageage.githubclient.feature.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,8 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import org.ageage.githubclient.core.ui.screenconfig.HomeScreenConfig
+import org.ageage.githubclient.core.ui.screenconfig.SearchRepositoryScreenConfig.navigateToSearchRepositoryScreen
 import org.ageage.githubclient.core.ui.theme.GitHubClientTheme
 import org.ageage.githubclient.core.ui.util.CollectWithLifecycle
 
@@ -42,21 +41,21 @@ fun NavGraphBuilder.homeScreen(
 }
 
 @Composable
-fun HomeScreen(
-    navController: NavController = rememberNavController()
+private fun HomeScreen(
+    navController: NavController
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CollectWithLifecycle(viewModel.effect) {
         when (it) {
-            HomeScreenEffect.NavigateToSearchRepositories -> {
-                Log.d("HomeScreen", "OnButtonClick")
+            is HomeScreenEffect.NavigateToSearchRepositoryScreen -> {
+                navController.navigateToSearchRepositoryScreen(it.query)
             }
         }
     }
 
-    HomeContent(
+    HomeScreenContent(
         uiState = uiState,
         onEvent = viewModel::onEvent
     )
@@ -64,7 +63,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeContent(
+private fun HomeScreenContent(
     uiState: HomeScreenState,
     onEvent: (HomeScreenEvent) -> Unit
 ) {
@@ -73,7 +72,7 @@ private fun HomeContent(
             TopAppBar(
                 title = {
                     Text(text = stringResource(id = R.string.home_top_app_bar_title))
-                },
+                }
             )
         }
     ) { padding ->
@@ -116,9 +115,9 @@ private fun HomeContent(
 
 @Preview
 @Composable
-private fun HomeScreenPreview() {
+private fun Preview_HomeScreenContent() {
     GitHubClientTheme {
-        HomeContent(
+        HomeScreenContent(
             uiState = HomeScreenState(),
             onEvent = {}
         )
