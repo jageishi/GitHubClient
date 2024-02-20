@@ -11,6 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.ageage.githubclient.data.network.SearchApiClient
 import org.ageage.githubclient.data.network.impl.SearchApiClientImpl
+import org.ageage.githubclient.data.network.interceptor.AccessTokenInterceptor
 import org.ageage.githubclient.data.network.service.GitHubApiService
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -22,7 +23,13 @@ internal object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideAccessTokenInterceptor(): AccessTokenInterceptor {
+        return AccessTokenInterceptor()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(accessTokenInterceptor: AccessTokenInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
@@ -31,15 +38,19 @@ internal object NetworkModule {
                 level = HttpLoggingInterceptor.Level.BODY
 
             })
+            .addInterceptor(accessTokenInterceptor)
             .build()
     }
 
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
         return Retrofit.Builder()
             .baseUrl("https://api.github.com")
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(okHttpClient)
             .build()
     }

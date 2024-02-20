@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.githubclient.android.library)
     alias(libs.plugins.githubclient.android.kotlin)
+    alias(libs.plugins.githubclient.android.compose)
 }
 
 android {

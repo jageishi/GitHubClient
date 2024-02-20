@@ -27,10 +27,20 @@ internal class SearchRepositoryViewModel @Inject constructor(
         when (event) {
             is SearchRepositoryScreenEvent.OnCreate -> {
                 _uiState.update { it.copy(searchQuery = event.searchQuery) }
+                // TODO 検索処理の呼び出し場所変更
+                // TODO 読込中の表示
+                // TODO ページネーション
+                // TODO エラーハンドリング
+                val gitHubRepositories = searchRepository.searchRepositories(event.searchQuery)
+                _uiState.update { it.copy(gitHubRepositories = gitHubRepositories) }
             }
 
             SearchRepositoryScreenEvent.OnTopAppBarBackArrowClick -> {
                 effectChannel.send(SearchRepositoryScreenEffect.NavigateUp)
+            }
+
+            is SearchRepositoryScreenEvent.OnGitHubRepositoryDetailCardClick -> {
+
             }
         }
     }

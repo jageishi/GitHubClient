@@ -1,8 +1,8 @@
 package org.ageage.githubclient.data.repository
 
-import org.ageage.githubclient.core.model.Repository
+import org.ageage.githubclient.core.model.GitHubRepository
 
 interface SearchRepository {
 
-    suspend fun searchRepositories(keyword: String): List<Repository>
+    suspend fun searchRepositories(keyword: String): List<GitHubRepository>
 }
