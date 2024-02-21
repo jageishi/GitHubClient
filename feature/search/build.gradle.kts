@@ -7,11 +7,13 @@ plugins {
 }
 
 android {
-    namespace = "org.ageage.githubclient.feature.home"
+    namespace = "org.ageage.githubclient.feature.searchrepository"
 }
 
 dependencies {
     implementation(projects.core.ui)
+    implementation(projects.core.model)
+    implementation(projects.core.exception)
     implementation(projects.data.repository)
 
     implementation(libs.androidx.core.ktx)

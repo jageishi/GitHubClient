@@ -34,13 +34,13 @@ android {
 dependencies {
     implementation(projects.core.ui)
 
-    implementation(projects.core.data.repository)
-    implementation(projects.core.data.repositoryImpl)
-    implementation(projects.core.data.network)
-    implementation(projects.core.data.networkImpl)
+    implementation(projects.data.repository)
+    implementation(projects.data.repositoryImpl)
+    implementation(projects.data.api)
+    implementation(projects.data.apiImpl)
 
     implementation(projects.feature.home)
-    implementation(projects.feature.searchRepository)
+    implementation(projects.feature.search)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
