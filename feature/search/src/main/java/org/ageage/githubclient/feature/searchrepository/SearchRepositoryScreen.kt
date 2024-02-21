@@ -48,9 +48,11 @@ import androidx.navigation.compose.composable
 import coil.compose.AsyncImage
 import org.ageage.githubclient.core.model.GitHubRepository
 import org.ageage.githubclient.core.model.Owner
+import org.ageage.githubclient.core.ui.component.ApiErrorDialog
 import org.ageage.githubclient.core.ui.screenconfig.SearchRepositoryScreenConfig
 import org.ageage.githubclient.core.ui.screenconfig.SearchRepositoryScreenConfig.getSearchRepositoryScreenQueryArg
 import org.ageage.githubclient.core.ui.theme.GitHubClientTheme
+import org.ageage.githubclient.core.ui.util.ApiErrorState
 import org.ageage.githubclient.core.ui.util.CollectWithLifecycle
 
 fun NavGraphBuilder.searchRepositoryScreen(
@@ -74,6 +76,7 @@ private fun SearchRepositoryScreen(
 ) {
     val viewModel: SearchRepositoryViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val apiErrorState by viewModel.apiErrorStateHelper.errorState.collectAsStateWithLifecycle()
 
     CollectWithLifecycle(viewModel.effect) {
         when (it) {
@@ -89,6 +92,7 @@ private fun SearchRepositoryScreen(
 
     SearchRepositoryScreenContent(
         uiState = uiState,
+        apiErrorState = apiErrorState,
         onEvent = viewModel::onEvent
     )
 }
@@ -97,6 +101,7 @@ private fun SearchRepositoryScreen(
 @Composable
 private fun SearchRepositoryScreenContent(
     uiState: SearchRepositoryScreenState,
+    apiErrorState: ApiErrorState,
     onEvent: (SearchRepositoryScreenEvent) -> Unit
 ) {
     Scaffold(
@@ -135,17 +140,27 @@ private fun SearchRepositoryScreenContent(
                 items = uiState.gitHubRepositories,
                 key = { it.id }
             ) {
-                GitHubRepositoryDetailCard(gitHubRepository = it) {
-                    onEvent(
-                        SearchRepositoryScreenEvent.OnGitHubRepositoryDetailCardClick(
-                            it.name,
-                            it.owner.name
+                GitHubRepositoryDetailCard(
+                    gitHubRepository = it,
+                    onClick = {
+                        onEvent(
+                            SearchRepositoryScreenEvent.OnGitHubRepositoryDetailCardClick(
+                                it.name,
+                                it.owner.name
+                            )
                         )
-                    )
-                }
+                    }
+                )
             }
         }
     }
+
+    ApiErrorDialog(
+        apiErrorState = apiErrorState,
+        onDismissRequest = {
+            onEvent(SearchRepositoryScreenEvent.OnApiErrorDialogDismissRequest)
+        }
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -249,6 +264,7 @@ private fun Preview_SearchRepositoryContent() {
                     )
                 }
             ),
+            apiErrorState = ApiErrorState.None,
             onEvent = {}
         )
     }
