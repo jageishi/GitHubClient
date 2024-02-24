@@ -1,5 +1,8 @@
 package org.ageage.githubclient
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -14,7 +17,9 @@ fun GitHubClientNavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = HomeScreenConfig.route
+        startDestination = HomeScreenConfig.route,
+        enterTransition = { fadeIn(animationSpec = tween(200)) },
+        exitTransition = { fadeOut(animationSpec = tween(200)) }
     ) {
         homeScreen(navController)
         searchRepositoryScreen(navController)
