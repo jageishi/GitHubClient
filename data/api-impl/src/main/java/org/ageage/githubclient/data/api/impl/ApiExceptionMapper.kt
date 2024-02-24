@@ -1,9 +1,9 @@
 package org.ageage.githubclient.data.api.impl
 
-import org.ageage.githubclient.exception.ForbiddenException
-import org.ageage.githubclient.exception.NetworkException
-import org.ageage.githubclient.exception.ServerErrorException
-import org.ageage.githubclient.exception.UnexpectedException
+import org.ageage.githubclient.common.exception.ForbiddenException
+import org.ageage.githubclient.common.exception.NetworkException
+import org.ageage.githubclient.common.exception.ServerErrorException
+import org.ageage.githubclient.common.exception.UnexpectedException
 import retrofit2.HttpException
 import java.io.IOException
 

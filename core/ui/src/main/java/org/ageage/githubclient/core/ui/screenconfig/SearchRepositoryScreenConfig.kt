@@ -1,12 +1,12 @@
 package org.ageage.githubclient.core.ui.screenconfig
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import java.net.URLDecoder
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
+import org.ageage.githubclient.common.extension.decode
+import org.ageage.githubclient.common.extension.encode
 
 data object SearchRepositoryScreenConfig : ScreenConfig {
     override val route: String = "search_repository"
@@ -19,17 +19,14 @@ data object SearchRepositoryScreenConfig : ScreenConfig {
     )
 
     fun NavController.navigateToSearchRepositoryScreen(query: String) {
-        val encodedQuery = URLEncoder.encode(
-            query,
-            StandardCharsets.UTF_8.toString()
-        )
-        navigate("$route/${encodedQuery}")
+        navigate("$route/${query.encode()}")
     }
 
     fun NavBackStackEntry.getSearchRepositoryScreenQueryArg(): String {
-        return URLDecoder.decode(
-            checkNotNull(arguments?.getString(queryArg)),
-            StandardCharsets.UTF_8.toString()
-        )
+        return checkNotNull(arguments?.getString(queryArg)).decode()
+    }
+
+    fun SavedStateHandle.getSearchRepositoryScreenQueryArg(): String {
+        return checkNotNull(this.get<String>(queryArg)).decode()
     }
 }

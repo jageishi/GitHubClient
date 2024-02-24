@@ -3,11 +3,11 @@ package org.ageage.githubclient.core.ui.util
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.ageage.githubclient.exception.ApiException
-import org.ageage.githubclient.exception.ForbiddenException
-import org.ageage.githubclient.exception.NetworkException
-import org.ageage.githubclient.exception.ServerErrorException
-import org.ageage.githubclient.exception.UnexpectedException
+import org.ageage.githubclient.common.exception.ApiException
+import org.ageage.githubclient.common.exception.ForbiddenException
+import org.ageage.githubclient.common.exception.NetworkException
+import org.ageage.githubclient.common.exception.ServerErrorException
+import org.ageage.githubclient.common.exception.UnexpectedException
 
 sealed interface ApiErrorState {
 

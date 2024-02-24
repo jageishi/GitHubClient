@@ -11,7 +11,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.exception)
+    implementation(projects.core.common)
     implementation(projects.data.api)
 
     implementation(libs.androidx.core.ktx)

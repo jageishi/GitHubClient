@@ -7,4 +7,5 @@ import org.ageage.githubclient.core.model.GitHubRepository
 internal data class SearchRepositoryScreenState(
     val searchQuery: String = "",
     val gitHubRepositories: List<GitHubRepository> = emptyList(),
+    val isLoading: Boolean = false
 )

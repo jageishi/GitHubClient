@@ -9,7 +9,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.exception)
+    implementation(projects.core.common)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 

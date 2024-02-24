@@ -1,4 +1,4 @@
-package org.ageage.githubclient.exception
+package org.ageage.githubclient.common.exception
 
 sealed class ApiException(cause: Throwable) : Exception(cause)
 
