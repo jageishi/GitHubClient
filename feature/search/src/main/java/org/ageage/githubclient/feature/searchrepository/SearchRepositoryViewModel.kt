@@ -53,7 +53,12 @@ internal class SearchRepositoryViewModel @Inject constructor(
             }
 
             is SearchRepositoryScreenEvent.OnGitHubRepositoryDetailCardClick -> {
-                //　TODO 詳細画面に遷移する
+                effectChannel.send(
+                    SearchRepositoryScreenEffect.NavigateToRepositoryDetailScreen(
+                        owner = event.owner,
+                        repo = event.repo
+                    )
+                )
             }
 
             SearchRepositoryScreenEvent.OnApiErrorDialogDismissRequest -> {

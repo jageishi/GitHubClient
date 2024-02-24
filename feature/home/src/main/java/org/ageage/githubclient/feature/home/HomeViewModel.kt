@@ -24,16 +24,27 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
     fun onEvent(event: HomeScreenEvent) = viewModelScope.launch {
         when (event) {
             is HomeScreenEvent.OnSearchQueryChange -> {
-                _uiState.update { it.copy(searchQuery = event.query) }
+                _uiState.update {
+                    it.copy(
+                        searchQuery = event.query,
+                        shouldShowEmptyQueryErrorText = event.query.isBlank()
+                    )
+                }
             }
 
             HomeScreenEvent.OnKeyboardActionSearch, // TODO 空文字で発火するとクラッシュする問題を修正する
             HomeScreenEvent.OnSearchButtonClick -> {
-                effectChannel.send(
-                    HomeScreenEffect.NavigateToSearchRepositoryScreen(
-                        query = uiState.value.searchQuery.trim()
+                val searchQuery = uiState.value.searchQuery.trim()
+                if (searchQuery.isBlank()) {
+                    _uiState.update { it.copy(shouldShowEmptyQueryErrorText = true) }
+                } else {
+                    effectChannel.send(
+                        HomeScreenEffect.NavigateToSearchRepositoryScreen(
+                            query = uiState.value.searchQuery.trim()
+                        )
                     )
-                )
+                }
+
             }
         }
     }

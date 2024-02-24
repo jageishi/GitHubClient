@@ -5,8 +5,8 @@ internal sealed interface SearchRepositoryScreenEvent {
     data object OnTopAppBarBackArrowClick : SearchRepositoryScreenEvent
 
     data class OnGitHubRepositoryDetailCardClick(
-        val repoName: String,
-        val ownerName: String
+        val owner: String,
+        val repo: String
     ) : SearchRepositoryScreenEvent
 
     data object OnApiErrorDialogDismissRequest : SearchRepositoryScreenEvent

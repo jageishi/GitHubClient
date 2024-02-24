@@ -49,8 +49,8 @@ import coil.compose.AsyncImage
 import org.ageage.githubclient.core.model.GitHubRepository
 import org.ageage.githubclient.core.model.Owner
 import org.ageage.githubclient.core.ui.component.ApiErrorDialog
+import org.ageage.githubclient.core.ui.screenconfig.RepositoryDetailScreenConfig.navigateToRepositoryDetailScreen
 import org.ageage.githubclient.core.ui.screenconfig.SearchRepositoryScreenConfig
-import org.ageage.githubclient.core.ui.screenconfig.SearchRepositoryScreenConfig.getSearchRepositoryScreenQueryArg
 import org.ageage.githubclient.core.ui.theme.GitHubClientTheme
 import org.ageage.githubclient.core.ui.util.ApiErrorState
 import org.ageage.githubclient.core.ui.util.CollectWithLifecycle
@@ -61,25 +61,26 @@ fun NavGraphBuilder.searchRepositoryScreen(
     composable(
         route = SearchRepositoryScreenConfig.routeWithArgs,
         arguments = SearchRepositoryScreenConfig.arguments
-    ) { navBackStackEntry ->
-        SearchRepositoryScreen(
-            navController = navController,
-            searchQuery = navBackStackEntry.getSearchRepositoryScreenQueryArg()
-        )
+    ) {
+        SearchRepositoryScreen(navController)
     }
 }
 
 @Composable
-private fun SearchRepositoryScreen(
-    navController: NavController,
-    searchQuery: String
-) {
+private fun SearchRepositoryScreen(navController: NavController) {
     val viewModel: SearchRepositoryViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val apiErrorState by viewModel.apiErrorStateHelper.errorState.collectAsStateWithLifecycle()
 
     CollectWithLifecycle(viewModel.effect) {
         when (it) {
+            is SearchRepositoryScreenEffect.NavigateToRepositoryDetailScreen -> {
+                navController.navigateToRepositoryDetailScreen(
+                    owner = it.owner,
+                    repo = it.repo
+                )
+            }
+
             SearchRepositoryScreenEffect.NavigateUp -> {
                 navController.navigateUp()
             }
@@ -147,8 +148,8 @@ private fun SearchRepositoryScreenContent(
                             onClick = {
                                 onEvent(
                                     SearchRepositoryScreenEvent.OnGitHubRepositoryDetailCardClick(
-                                        it.name,
-                                        it.owner.name
+                                        owner = it.owner.name,
+                                        repo = it.name
                                     )
                                 )
                             }
@@ -178,7 +179,7 @@ private fun GitHubRepositoryDetailCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(CardDefaults.shape)
-            .clickable { }
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier
@@ -248,7 +249,7 @@ private fun GitHubRepositoryDetailCard(
 
 @Preview
 @Composable
-private fun Preview_SearchRepositoryContent_List() {
+private fun Preview_SearchRepositoryContent_Loaded() {
     GitHubClientTheme {
         SearchRepositoryScreenContent(
             uiState = SearchRepositoryScreenState(

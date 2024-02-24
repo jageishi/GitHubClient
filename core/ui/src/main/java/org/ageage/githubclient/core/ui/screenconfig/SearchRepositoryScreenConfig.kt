@@ -1,7 +1,6 @@
 package org.ageage.githubclient.core.ui.screenconfig
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -20,10 +19,6 @@ data object SearchRepositoryScreenConfig : ScreenConfig {
 
     fun NavController.navigateToSearchRepositoryScreen(query: String) {
         navigate("$route/${query.encode()}")
-    }
-
-    fun NavBackStackEntry.getSearchRepositoryScreenQueryArg(): String {
-        return checkNotNull(arguments?.getString(queryArg)).decode()
     }
 
     fun SavedStateHandle.getSearchRepositoryScreenQueryArg(): String {
