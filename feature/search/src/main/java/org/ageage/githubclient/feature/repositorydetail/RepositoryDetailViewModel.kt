@@ -11,14 +11,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.ageage.githubclient.common.exception.ApiException
 import org.ageage.githubclient.core.ui.screenconfig.RepositoryDetailScreenConfig.getRepositoryDetailScreenOwnerArg
 import org.ageage.githubclient.core.ui.screenconfig.RepositoryDetailScreenConfig.getRepositoryDetailScreenRepoArg
 import org.ageage.githubclient.core.ui.util.ApiErrorStateHelper
+import org.ageage.githubclient.data.repository.GitHubRepository
 import javax.inject.Inject
 
 @HiltViewModel
 internal class RepositoryDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val gitHubRepository: GitHubRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RepositoryDetailScreenState())
@@ -30,9 +33,19 @@ internal class RepositoryDetailViewModel @Inject constructor(
     val apiErrorStateHelper = ApiErrorStateHelper()
 
     init {
-        val owner = savedStateHandle.getRepositoryDetailScreenOwnerArg()
-        val repo = savedStateHandle.getRepositoryDetailScreenRepoArg()
-        _uiState.update { it.copy(owner = owner, repo = repo) }
+        viewModelScope.launch {
+            try {
+                val owner = savedStateHandle.getRepositoryDetailScreenOwnerArg()
+                val repo = savedStateHandle.getRepositoryDetailScreenRepoArg()
+                _uiState.update { it.copy(owner = owner, repo = repo, isLoading = true) }
+                val gitHubRepo = gitHubRepository.showRepository(owner = owner, repo = repo)
+                _uiState.update { it.copy(gitHubRepo = gitHubRepo) }
+            } catch (e: ApiException) {
+                apiErrorStateHelper.handleApiException(e)
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
     }
 
     fun onEvent(event: RepositoryDetailScreenEvent) = viewModelScope.launch {

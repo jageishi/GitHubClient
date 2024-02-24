@@ -100,7 +100,7 @@ private fun RepositoryDetailContent(
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            } else {
+            } else if (uiState.gitHubRepo != null) {
                 // TODO コンテンツを表示する
             }
         }

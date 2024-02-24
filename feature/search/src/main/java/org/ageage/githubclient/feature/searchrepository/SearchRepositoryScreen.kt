@@ -46,7 +46,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil.compose.AsyncImage
-import org.ageage.githubclient.core.model.GitHubRepository
+import org.ageage.githubclient.core.model.GitHubRepo
 import org.ageage.githubclient.core.model.Owner
 import org.ageage.githubclient.core.ui.component.ApiErrorDialog
 import org.ageage.githubclient.core.ui.screenconfig.RepositoryDetailScreenConfig.navigateToRepositoryDetailScreen
@@ -140,11 +140,11 @@ private fun SearchRepositoryScreenContent(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(
-                        items = uiState.gitHubRepositories,
+                        items = uiState.gitHubRepos,
                         key = { it.id }
                     ) {
                         GitHubRepositoryDetailCard(
-                            gitHubRepository = it,
+                            gitHubRepo = it,
                             onClick = {
                                 onEvent(
                                     SearchRepositoryScreenEvent.OnGitHubRepositoryDetailCardClick(
@@ -171,7 +171,7 @@ private fun SearchRepositoryScreenContent(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun GitHubRepositoryDetailCard(
-    gitHubRepository: GitHubRepository,
+    gitHubRepo: GitHubRepo,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -194,13 +194,13 @@ private fun GitHubRepositoryDetailCard(
                         .size(40.dp)
                         .clip(CircleShape)
                         .background(Color.White),
-                    model = gitHubRepository.owner.avatarUrl,
-                    contentDescription = gitHubRepository.owner.name
+                    model = gitHubRepo.owner.avatarUrl,
+                    contentDescription = gitHubRepo.owner.name
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     modifier = Modifier.weight(weight = 1f, fill = false),
-                    text = gitHubRepository.fullName,
+                    text = gitHubRepo.fullName,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.size(8.dp))
@@ -209,10 +209,10 @@ private fun GitHubRepositoryDetailCard(
                     painter = painterResource(id = R.drawable.baseline_star_24),
                     contentDescription = null
                 )
-                Text(text = gitHubRepository.stargazersCount.toString())
+                Text(text = gitHubRepo.stargazersCount.toString())
             }
             Spacer(modifier = Modifier.size(8.dp))
-            gitHubRepository.description?.let { description ->
+            gitHubRepo.description?.let { description ->
                 Text(
                     text = description,
                     maxLines = 5,
@@ -225,7 +225,7 @@ private fun GitHubRepositoryDetailCard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                gitHubRepository.topics.forEach { topic ->
+                gitHubRepo.topics.forEach { topic ->
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
@@ -254,8 +254,8 @@ private fun Preview_SearchRepositoryContent_Loaded() {
         SearchRepositoryScreenContent(
             uiState = SearchRepositoryScreenState(
                 searchQuery = "検索キーワード",
-                gitHubRepositories = (1..10).map { index ->
-                    GitHubRepository(
+                gitHubRepos = (1..10).map { index ->
+                    GitHubRepo(
                         id = index.toLong(),
                         name = "repo$index",
                         fullName = "user$index/repo$index",

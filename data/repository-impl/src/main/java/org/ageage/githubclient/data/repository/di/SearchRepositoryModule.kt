@@ -5,8 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import org.ageage.githubclient.data.api.GitHubApiClient
-import org.ageage.githubclient.data.repository.SearchRepository
-import org.ageage.githubclient.data.repository.impl.SearchRepositoryImpl
+import org.ageage.githubclient.data.repository.GitHubRepository
+import org.ageage.githubclient.data.repository.impl.GitHubRepositoryImpl
 
 
 @Module
@@ -14,7 +14,7 @@ import org.ageage.githubclient.data.repository.impl.SearchRepositoryImpl
 internal object SearchRepositoryModule {
 
     @Provides
-    fun providesSearchRepository(gitHubApiClient: GitHubApiClient): SearchRepository {
-        return SearchRepositoryImpl(gitHubApiClient)
+    fun providesSearchRepository(gitHubApiClient: GitHubApiClient): GitHubRepository {
+        return GitHubRepositoryImpl(gitHubApiClient)
     }
 }

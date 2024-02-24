@@ -3,7 +3,7 @@ package org.ageage.githubclient.core.model
 import androidx.compose.runtime.Stable
 
 @Stable
-data class GitHubRepository(
+data class GitHubRepo(
     val id: Long,
     val name: String,
     val fullName: String,

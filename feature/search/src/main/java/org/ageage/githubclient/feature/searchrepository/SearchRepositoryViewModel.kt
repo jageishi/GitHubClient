@@ -14,13 +14,13 @@ import kotlinx.coroutines.launch
 import org.ageage.githubclient.common.exception.ApiException
 import org.ageage.githubclient.core.ui.screenconfig.SearchRepositoryScreenConfig.getSearchRepositoryScreenQueryArg
 import org.ageage.githubclient.core.ui.util.ApiErrorStateHelper
-import org.ageage.githubclient.data.repository.SearchRepository
+import org.ageage.githubclient.data.repository.GitHubRepository
 import javax.inject.Inject
 
 @HiltViewModel
 internal class SearchRepositoryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val searchRepository: SearchRepository
+    private val gitHubRepository: GitHubRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchRepositoryScreenState())
@@ -33,11 +33,11 @@ internal class SearchRepositoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val query = savedStateHandle.getSearchRepositoryScreenQueryArg()
-            _uiState.update { it.copy(searchQuery = query, isLoading = true) }
             try {
-                val gitHubRepositories = searchRepository.searchRepositories(query)
-                _uiState.update { it.copy(gitHubRepositories = gitHubRepositories) }
+                val query = savedStateHandle.getSearchRepositoryScreenQueryArg()
+                _uiState.update { it.copy(searchQuery = query, isLoading = true) }
+                val gitHubRepositories = gitHubRepository.searchRepositories(query)
+                _uiState.update { it.copy(gitHubRepos = gitHubRepositories) }
             } catch (e: ApiException) {
                 apiErrorStateHelper.handleApiException(e)
             } finally {
