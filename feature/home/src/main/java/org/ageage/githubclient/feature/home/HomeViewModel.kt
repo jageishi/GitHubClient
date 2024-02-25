@@ -32,20 +32,27 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
                 }
             }
 
-            HomeScreenEvent.OnKeyboardActionSearch, // TODO 空文字で発火するとクラッシュする問題を修正する
-            HomeScreenEvent.OnSearchButtonClick -> {
-                val searchQuery = uiState.value.searchQuery.trim()
-                if (searchQuery.isBlank()) {
-                    _uiState.update { it.copy(shouldShowEmptyQueryErrorText = true) }
-                } else {
-                    effectChannel.send(
-                        HomeScreenEffect.NavigateToSearchRepositoryScreen(
-                            query = uiState.value.searchQuery.trim()
-                        )
-                    )
-                }
+            is HomeScreenEvent.OnKeyboardActionSearch -> {
+                onSearchRequest(event.query)
+            }
 
+            is HomeScreenEvent.OnSearchButtonClick -> {
+                onSearchRequest(event.query)
             }
         }
+    }
+
+    private suspend fun onSearchRequest(query: String) {
+        val searchQuery = query.trim()
+        if (searchQuery.isBlank()) {
+            _uiState.update { it.copy(shouldShowEmptyQueryErrorText = true) }
+        } else {
+            effectChannel.send(
+                HomeScreenEffect.NavigateToSearchRepositoryScreen(
+                    query = searchQuery
+                )
+            )
+        }
+
     }
 }

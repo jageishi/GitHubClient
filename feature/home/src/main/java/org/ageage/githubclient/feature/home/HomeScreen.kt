@@ -101,7 +101,7 @@ private fun HomeScreenContent(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        onEvent(HomeScreenEvent.OnKeyboardActionSearch)
+                        onEvent(HomeScreenEvent.OnKeyboardActionSearch(uiState.searchQuery))
                     }
                 ),
                 isError = uiState.shouldShowEmptyQueryErrorText
@@ -123,7 +123,7 @@ private fun HomeScreenContent(
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     modifier = Modifier.padding(top = 8.dp, end = 16.dp),
-                    onClick = { onEvent(HomeScreenEvent.OnSearchButtonClick) },
+                    onClick = { onEvent(HomeScreenEvent.OnSearchButtonClick(uiState.searchQuery)) },
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(text = stringResource(id = R.string.home_button_search))

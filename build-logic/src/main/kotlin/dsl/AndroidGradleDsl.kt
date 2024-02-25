@@ -7,6 +7,7 @@ import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 
 internal fun Project.androidApplication(action: BaseAppModuleExtension.() -> Unit) {
     extensions.configure(action)
@@ -32,5 +33,10 @@ fun Project.configureAndroid() {
             sourceCompatibility = JavaVersion.VERSION_11
             targetCompatibility = JavaVersion.VERSION_11
         }
+    }
+
+    dependencies {
+        testImplementation(libs.library("androidx-arch-core-testing"))
+        testImplementation(libs.library("androidx-test-ext-junit"))
     }
 }
