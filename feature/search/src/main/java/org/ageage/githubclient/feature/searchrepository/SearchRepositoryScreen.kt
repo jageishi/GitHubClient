@@ -31,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -101,6 +102,12 @@ private fun SearchRepositoryScreenContent(
     apiErrorState: ApiErrorState,
     onEvent: (SearchRepositoryScreenEvent) -> Unit
 ) {
+    LaunchedEffect(uiState.isInitialized) {
+        if (!uiState.isInitialized) {
+            onEvent(SearchRepositoryScreenEvent.OnInitializeRequest)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(

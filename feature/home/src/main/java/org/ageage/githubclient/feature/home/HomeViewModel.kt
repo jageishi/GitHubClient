@@ -4,19 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class HomeViewModel @Inject constructor() : ViewModel() {
+internal class HomeViewModel @Inject constructor(
+    private val reducer: HomeReducer
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeScreenState())
-    val uiState: StateFlow<HomeScreenState> = _uiState.asStateFlow()
+    val uiState: StateFlow<HomeScreenState>
+        get() = reducer.state
 
     private val effectChannel = Channel<HomeScreenEffect>(Channel.UNLIMITED)
     val effect = effectChannel.receiveAsFlow()
@@ -24,35 +23,22 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
     fun onEvent(event: HomeScreenEvent) = viewModelScope.launch {
         when (event) {
             is HomeScreenEvent.OnSearchQueryChange -> {
-                _uiState.update {
-                    it.copy(
-                        searchQuery = event.query,
-                        shouldShowEmptyQueryErrorText = event.query.isBlank()
+                reducer.dispatch(HomeScreenAction.UpdateQuery(event.query))
+            }
+
+            is HomeScreenEvent.OnKeyboardActionSearch,
+            is HomeScreenEvent.OnSearchButtonClick -> {
+                val searchQuery = uiState.value.searchQuery
+                if (searchQuery.isBlank()) {
+                    reducer.dispatch(HomeScreenAction.ShowEmptyQueryErrorText)
+                } else {
+                    effectChannel.send(
+                        HomeScreenEffect.NavigateToSearchRepositoryScreen(
+                            query = searchQuery
+                        )
                     )
                 }
             }
-
-            is HomeScreenEvent.OnKeyboardActionSearch -> {
-                onSearchRequest(event.query)
-            }
-
-            is HomeScreenEvent.OnSearchButtonClick -> {
-                onSearchRequest(event.query)
-            }
         }
-    }
-
-    private suspend fun onSearchRequest(query: String) {
-        val searchQuery = query.trim()
-        if (searchQuery.isBlank()) {
-            _uiState.update { it.copy(shouldShowEmptyQueryErrorText = true) }
-        } else {
-            effectChannel.send(
-                HomeScreenEffect.NavigateToSearchRepositoryScreen(
-                    query = searchQuery
-                )
-            )
-        }
-
     }
 }

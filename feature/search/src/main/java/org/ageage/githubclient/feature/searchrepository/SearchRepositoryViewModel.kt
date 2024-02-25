@@ -5,11 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ageage.githubclient.common.exception.ApiException
 import org.ageage.githubclient.core.ui.screenconfig.SearchRepositoryScreenConfig.getSearchRepositoryScreenQueryArg
@@ -19,35 +16,35 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SearchRepositoryViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
+    private val reducer: SearchRepositoryReducer,
     private val gitHubRepository: GitHubRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SearchRepositoryScreenState())
-    val uiState: StateFlow<SearchRepositoryScreenState> = _uiState.asStateFlow()
+    val uiState: StateFlow<SearchRepositoryScreenState>
+        get() = reducer.state
 
     private val effectChannel = Channel<SearchRepositoryScreenEffect>(Channel.UNLIMITED)
     val effect = effectChannel.receiveAsFlow()
 
     val apiErrorStateHelper = ApiErrorStateHelper()
 
-    init {
-        viewModelScope.launch {
-            try {
-                val query = savedStateHandle.getSearchRepositoryScreenQueryArg()
-                _uiState.update { it.copy(searchQuery = query, isLoading = true) }
-                val gitHubRepositories = gitHubRepository.searchRepositories(query)
-                _uiState.update { it.copy(gitHubRepos = gitHubRepositories) }
-            } catch (e: ApiException) {
-                apiErrorStateHelper.handleApiException(e)
-            } finally {
-                _uiState.update { it.copy(isLoading = false) }
-            }
-        }
-    }
-
     fun onEvent(event: SearchRepositoryScreenEvent) = viewModelScope.launch {
         when (event) {
+            SearchRepositoryScreenEvent.OnInitializeRequest -> {
+                try {
+                    val query = savedStateHandle.getSearchRepositoryScreenQueryArg()
+                    reducer.dispatch(SearchRepositoryScreenAction.Initialize(query))
+                    reducer.dispatch(SearchRepositoryScreenAction.BeginLoading)
+                    val gitHubRepositories = gitHubRepository.searchRepositories(query)
+                    reducer.dispatch(SearchRepositoryScreenAction.SetGitHubRepos(gitHubRepositories))
+                } catch (e: ApiException) {
+                    apiErrorStateHelper.handleApiException(e)
+                } finally {
+                    reducer.dispatch(SearchRepositoryScreenAction.EndLoading)
+                }
+            }
+
             SearchRepositoryScreenEvent.OnTopAppBarBackArrowClick -> {
                 effectChannel.send(SearchRepositoryScreenEffect.NavigateUp)
             }

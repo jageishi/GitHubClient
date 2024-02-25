@@ -2,9 +2,9 @@ package org.ageage.githubclient.feature.home
 
 internal sealed interface HomeScreenEvent {
 
-    data class OnSearchButtonClick(val query: String) : HomeScreenEvent
+    data object OnSearchButtonClick : HomeScreenEvent
 
-    data class OnKeyboardActionSearch(val query: String) : HomeScreenEvent
+    data object OnKeyboardActionSearch : HomeScreenEvent
 
     data class OnSearchQueryChange(val query: String) : HomeScreenEvent
 }

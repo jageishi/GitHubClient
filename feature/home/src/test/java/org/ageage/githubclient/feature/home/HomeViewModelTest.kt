@@ -1,9 +1,14 @@
 package org.ageage.githubclient.feature.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.verifySequence
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -15,18 +20,24 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 
-class HomeViewModelTest {
+internal class HomeViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var viewModel: HomeViewModel
 
+    @MockK
+    private lateinit var reducer: HomeReducer
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        viewModel = HomeViewModel()
+        MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(UnconfinedTestDispatcher())
+        viewModel = HomeViewModel(
+            reducer = reducer
+        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,158 +46,72 @@ class HomeViewModelTest {
         Dispatchers.resetMain()
     }
 
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onSearchQueryChange_whenQueryIsNotEmpty() = runTest {
-        val uiStateList = mutableListOf<HomeScreenState>()
-        val collectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect {
-                uiStateList.add(it)
-            }
+    fun onSearchQueryChange() = runTest {
+        val query = "query"
+        viewModel.onEvent(HomeScreenEvent.OnSearchQueryChange(query))
+
+        verifySequence {
+            reducer.dispatch(HomeScreenAction.UpdateQuery(query))
         }
-
-        viewModel.onEvent(HomeScreenEvent.OnSearchQueryChange("query"))
-
-        assertEquals(2, uiStateList.size)
-        assertEquals(
-            listOf(
-                HomeScreenState(),
-                HomeScreenState(searchQuery = "query", shouldShowEmptyQueryErrorText = false)
-            ),
-            uiStateList
-        )
-
-        collectJob.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun onSearchQueryChange_whenQueryIsEmpty() = runTest {
-        val uiStateList = mutableListOf<HomeScreenState>()
-        val uiStateCollectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect {
-                uiStateList.add(it)
-            }
-        }
-
-        viewModel.onEvent(HomeScreenEvent.OnSearchQueryChange(""))
-
-        assertEquals(2, uiStateList.size)
-        assertEquals(
-            listOf(
-                HomeScreenState(),
-                HomeScreenState(shouldShowEmptyQueryErrorText = true)
-            ),
-            uiStateList
-        )
-
-        uiStateCollectJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun onKeyboardActionSearch_whenQueryIsNotEmpty() = runTest {
-        val effectList = mutableListOf<HomeScreenEffect>()
-        val effectCollectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.effect.collect {
-                effectList.add(it)
-            }
-        }
+        val query = "query"
+        every {
+            reducer.state
+        } returns MutableStateFlow(HomeScreenState(searchQuery = query))
 
-        viewModel.onEvent(HomeScreenEvent.OnKeyboardActionSearch("query"))
+        viewModel.onEvent(HomeScreenEvent.OnKeyboardActionSearch)
 
-        assertEquals(1, effectList.size)
         assertEquals(
-            HomeScreenEffect.NavigateToSearchRepositoryScreen("query"),
-            effectList[0]
+            HomeScreenEffect.NavigateToSearchRepositoryScreen(query),
+            viewModel.effect.first()
         )
-
-        effectCollectJob.cancel()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun onKeyboardActionSearch_whenQueryIsEmpty() = runTest {
-        val uiStateList = mutableListOf<HomeScreenState>()
-        val uiStateCollectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect {
-                uiStateList.add(it)
-            }
+        every {
+            reducer.state
+        } returns MutableStateFlow(HomeScreenState(searchQuery = ""))
+
+        viewModel.onEvent(HomeScreenEvent.OnKeyboardActionSearch)
+
+        verifySequence {
+            reducer.state
+            reducer.dispatch(HomeScreenAction.ShowEmptyQueryErrorText)
         }
-        val effectList = mutableListOf<HomeScreenEffect>()
-        val effectCollectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.effect.collect {
-                effectList.add(it)
-            }
-        }
-
-        viewModel.onEvent(HomeScreenEvent.OnKeyboardActionSearch(""))
-
-        assertEquals(2, uiStateList.size)
-        assertEquals(
-            listOf(
-                HomeScreenState(),
-                HomeScreenState(shouldShowEmptyQueryErrorText = true)
-            ),
-            uiStateList
-        )
-        assertEquals(0, effectList.size)
-
-        uiStateCollectJob.cancel()
-        effectCollectJob.cancel()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun onSearchButtonClick_whenQueryIsNotEmpty() = runTest {
-        val effectList = mutableListOf<HomeScreenEffect>()
-        val effectCollectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.effect.collect {
-                effectList.add(it)
-            }
-        }
+        val query = "query"
+        every {
+            reducer.state
+        } returns MutableStateFlow(HomeScreenState(searchQuery = query))
 
-        viewModel.onEvent(HomeScreenEvent.OnSearchButtonClick("query"))
+        viewModel.onEvent(HomeScreenEvent.OnSearchButtonClick)
 
-        assertEquals(1, effectList.size)
         assertEquals(
-            HomeScreenEffect.NavigateToSearchRepositoryScreen("query"),
-            effectList[0]
+            HomeScreenEffect.NavigateToSearchRepositoryScreen(query),
+            viewModel.effect.first()
         )
-
-        effectCollectJob.cancel()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun onSearchButtonClick_whenQueryIsEmpty() = runTest {
-        val uiStateList = mutableListOf<HomeScreenState>()
-        val uiStateCollectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect {
-                uiStateList.add(it)
-            }
+        every {
+            reducer.state
+        } returns MutableStateFlow(HomeScreenState(searchQuery = ""))
+
+        viewModel.onEvent(HomeScreenEvent.OnSearchButtonClick)
+
+        verifySequence {
+            reducer.state
+            reducer.dispatch(HomeScreenAction.ShowEmptyQueryErrorText)
         }
-        val effectList = mutableListOf<HomeScreenEffect>()
-        val effectCollectJob = launch(UnconfinedTestDispatcher()) {
-            viewModel.effect.collect {
-                effectList.add(it)
-            }
-        }
-
-        viewModel.onEvent(HomeScreenEvent.OnSearchButtonClick(""))
-
-        assertEquals(2, uiStateList.size)
-        assertEquals(
-            listOf(
-                HomeScreenState(),
-                HomeScreenState(shouldShowEmptyQueryErrorText = true)
-            ),
-            uiStateList
-        )
-        assertEquals(0, effectList.size)
-
-        uiStateCollectJob.cancel()
-        effectCollectJob.cancel()
     }
 }

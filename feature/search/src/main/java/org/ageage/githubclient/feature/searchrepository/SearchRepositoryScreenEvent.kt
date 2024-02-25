@@ -2,6 +2,8 @@ package org.ageage.githubclient.feature.searchrepository
 
 internal sealed interface SearchRepositoryScreenEvent {
 
+    data object OnInitializeRequest : SearchRepositoryScreenEvent
+
     data object OnTopAppBarBackArrowClick : SearchRepositoryScreenEvent
 
     data class OnGitHubRepositoryDetailCardClick(
