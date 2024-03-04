@@ -16,3 +16,15 @@ MVVM + Redux
 
 ## モジュール構成
 
+```mermaid
+graph TD;
+    :feature:xx-->:data:repository;
+    :feature:xx-->:core:ui
+    :feature:xx-->:core:model
+    :data:repository-->:core:model
+    :data:repository-impl-->:data:repository;
+    :data:repository-impl-->:data:api;
+    :data:repository-impl-->:core:model
+    :data:api-impl-->:data:api
+    :data:api-impl-->:core:model
+```
