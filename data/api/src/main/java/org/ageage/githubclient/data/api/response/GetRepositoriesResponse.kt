@@ -17,6 +17,7 @@ data class GetRepositoriesResponseItem(
     @SerialName("stargazers_count") val stargazersCount: Int,
     @SerialName("topics") val topics: List<String>,
     @SerialName("owner") val owner: GetRepositoriesResponseItemOwner,
+    @SerialName("html_url") val htmlUrl: String
 )
 
 @Serializable

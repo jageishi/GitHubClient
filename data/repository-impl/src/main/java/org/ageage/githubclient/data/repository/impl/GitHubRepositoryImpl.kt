@@ -20,7 +20,8 @@ internal class GitHubRepositoryImpl(
                 owner = Owner(
                     name = it.owner.login,
                     avatarUrl = it.owner.avatarUrl
-                )
+                ),
+                htmlUrl = it.htmlUrl
             )
         }
     }
@@ -37,7 +38,8 @@ internal class GitHubRepositoryImpl(
                 owner = Owner(
                     name = it.owner.login,
                     avatarUrl = it.owner.avatarUrl
-                )
+                ),
+                htmlUrl = it.htmlUrl
             )
         }
     }

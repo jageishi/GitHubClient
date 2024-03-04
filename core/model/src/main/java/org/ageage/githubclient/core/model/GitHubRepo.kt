@@ -10,5 +10,6 @@ data class GitHubRepo(
     val description: String?,
     val stargazersCount: Int,
     val topics: List<String>,
-    val owner: Owner
+    val owner: Owner,
+    val htmlUrl: String
 )

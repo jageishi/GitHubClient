@@ -272,7 +272,8 @@ private fun Preview_SearchRepositoryContent_Loaded() {
                         owner = Owner(
                             name = "user$index",
                             avatarUrl = "https://example.com/image.png"
-                        )
+                        ),
+                        htmlUrl = "https://example.com"
                     )
                 }
             ),
