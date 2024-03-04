@@ -6,7 +6,8 @@
 
 ## 環境
 
-Android Studio Iguana
+- JDK 17
+- Android Studio Iguana 以上
 
 ## アーキテクチャ
 
