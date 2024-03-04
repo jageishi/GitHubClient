@@ -34,9 +34,7 @@ android {
 dependencies {
     implementation(projects.core.ui)
 
-    implementation(projects.data.repository)
     implementation(projects.data.repositoryImpl)
-    implementation(projects.data.api)
     implementation(projects.data.apiImpl)
 
     implementation(projects.feature.home)
