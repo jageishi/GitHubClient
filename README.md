@@ -1,7 +1,5 @@
 # GitHubClient
 
-## 動画
-
 <image width="400" src="./art/screen_recording.gif" />
 
 ## 環境
